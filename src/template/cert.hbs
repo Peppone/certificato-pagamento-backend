@@ -53,7 +53,6 @@
 			text-align: center;
 			width: 200px;
 			float: left;
-
 		}
 
 		.sidetable table,
@@ -78,6 +77,102 @@
 			grid-column-end: 3;
 			width: 100%;
 		}
+
+		.invoice-header {
+			font-size: 12px;
+			padding: 5px;
+			border-collapse: collapse;
+		}
+
+		.invoice-header th {
+			border-bottom: 1pt solid black;
+			border-top: 1pt solid black;
+			border-left: 1pt solid black;
+			padding: 5px;
+		}
+
+		.invoice-header th:first-child {
+			border-right: 1pt solid black;
+		}
+
+		.invoice-header th:last-child {
+			border-right: 1pt solid black;
+		}
+
+		.invoice-header th:not(:first-child):not(:last-child) {
+			border-left: 1pt solid black;
+			border-right: 1pt solid black;
+		}
+
+		.invoice-row td {
+			padding: 5px;
+			font-size: 10px;
+			text-align: center;
+			border-collapse: collapse;
+			border-bottom: 1pt solid black;
+		}
+
+		.invoice-row td:first-child {
+			border-right: 1pt solid black;
+			border-left: 1pt solid black;
+		}
+
+		.invoice-row td:last-child {
+			border-right: 1pt solid black;
+		}
+
+		.invoice-row td:not(:first-child):not(:last-child) {
+			border-left: 1pt solid black;
+			border-right: 1pt solid black;
+		}
+
+		.final-row td {
+			font-size: 12px;
+			font-weight: bold;
+			border-top: 1pt solid black;
+			border-bottom: 1pt solid black;
+			border-left: 1pt solid black;
+		}
+
+		.border-collapse {
+			border-collapse: collapse;
+			padding: 5px;
+		}
+
+		.inner-table {
+			border-collapse: collapse;
+			width: 100%;
+			border: none;
+		}
+
+		.inner-row td:first-child {
+			text-align: left;
+			border: none
+		}
+
+		.inner-row td:last-child {
+			text-align: right;
+			border: none;
+		}
+
+		.credit {
+			color: rgba(13, 13, 148, 0.877);
+			font-weight: 200;
+		}
+
+		.debit {
+			color: rgb(194, 13, 13);
+			font-weight: 200;
+		}
+
+		.invoice-table-container {
+			display:flex;
+			flex-direction:row;
+			justify-content:center;
+			padding-top: 16px;
+			padding-bottom: 16px;
+		}
+
 	</style>
 </head>
 
@@ -164,20 +259,63 @@
 					di cui all'art.11,
 					6° comma del D.Lgs 36/2023, come previsto dal contratto esecutivo per ciascuno dei SAL:
 				</p>
-				<table>
-					<tr>
-						<th>Fattura</th>
-						<th>Data</th>
-						<th>Importo</th>
-					</tr>
-					{{#each fatture}}
-					<tr>
-						<td>{{this.numero}}</td>
-						<td>{{this.data}}</td>
-						<td>{{this.importo}}</td>
-					</tr>
-					{{/each}}
-				</table>
+				<div class="invoice-table-container">
+					<table class="border-collapse">
+						<tr class="invoice-header">
+							<th>Fattura</th>
+							<th>Data</th>
+							<th>Periodo</th>
+							<th>Voci</th>
+							<th>Totale</th>
+
+						</tr>
+						{{#each fatture}}
+						<tr class="invoice-row">
+							<td>{{this.numero}}</td>
+							<td>{{this.data}}</td>
+							<td>{{this.periodo}}</td>
+							<td>
+								<table class="inner-table">
+									<tr class="inner-row">
+										<td>
+											Credito
+										</td>
+										<td class="credit">
+											{{this.imponibile}}
+										</td>
+									</tr>
+									{{#if this.detrazione}}
+									<tr class="inner-row">
+										<td>
+											Detrazione
+										</td>
+										<td class="debit">
+											{{this.detrazione}}
+										</td>
+									</tr>
+									{{/if}}
+									{{#if this.iva}}
+									<tr class="inner-row">
+										<td>
+											IVA ({{this.percentualeIva}})
+										</td>
+										<td class="credit">
+											{{this.iva}}
+										</td>
+									</tr>
+									{{/if}}
+								</table>
+							</td>
+							<td>{{this.totale}}</td>
+						</tr>
+						{{/each}}
+						<tr class="invoice-row final-row">
+							<td colspan="4" class="invoice-header">Totale Credito</td>
+							<td>{{totale}}</td>
+						</tr>
+					</table>
+				</div>
+				<h1 class="center-bold">CERTIFICA</h1>
 			</div>
 		</div>
 	</div>

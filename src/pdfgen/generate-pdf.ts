@@ -34,31 +34,77 @@ class PDFController {
         }).format(certamount),
       })
     );
-
+    let totale = 0;
     const formattedFatture = certificato.fatture.map(
-      ({ importo, ...rest }) => ({
-        ...rest,
-        importo: new Intl.NumberFormat("it-IT", {
+      ({ imponibile, detrazione, iva, percentualeIva, ...rest }) => {
+        const formattedImponibile = new Intl.NumberFormat("it-IT", {
           style: "currency",
           currency: "EUR",
-        }).format(importo),
-      })
+        }).format(imponibile);
+
+        const formattedDetrazione =
+          detrazione &&
+          new Intl.NumberFormat("it-IT", {
+            style: "currency",
+            currency: "EUR",
+          }).format(detrazione);
+
+        const formattedIva =
+          iva &&
+          new Intl.NumberFormat("it-IT", {
+            style: "currency",
+            currency: "EUR",
+          }).format(iva);
+
+        const partTotale = imponibile + (detrazione || 0) + iva;
+
+        totale += partTotale;
+
+        const formattedPartTotale = new Intl.NumberFormat("it-IT", {
+          style: "currency",
+          currency: "EUR",
+        }).format(partTotale);
+
+        const formattedPercentualeIva = new Intl.NumberFormat("it-IT", {
+          style: "percent",
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        }).format(percentualeIva);
+
+        return {
+          ...rest,
+          imponibile: formattedImponibile,
+          detrazione: formattedDetrazione,
+          totale: formattedPartTotale,
+          iva: formattedIva,
+          percentualeIva: formattedPercentualeIva,
+        };
+      }
     );
 
-    const totaleSintesiCertificato = certificato.sintesiCertificato && new Intl.NumberFormat("it-IT", {
+    const totaleSintesiCertificato =
+      certificato.sintesiCertificato &&
+      new Intl.NumberFormat("it-IT", {
+        style: "currency",
+        currency: "EUR",
+      }).format(
+        certificato.sintesiCertificato.reduce(
+          (acc, curr) => (acc += curr.certamount),
+          0
+        )
+      );
+
+    const formattedTotale = new Intl.NumberFormat("it-IT", {
       style: "currency",
       currency: "EUR",
-    }).format(
-      certificato.sintesiCertificato.reduce(
-        (acc, curr) => (acc += curr.certamount),
-        0
-      )
-    );
+    }).format(totale);
+
     const data = {
       ...certificato,
       certificate: formattedSintesiCertificato,
       totaleSintesiCertificato,
       fatture: formattedFatture,
+      totale: formattedTotale,
     };
     const fileCompiled = Handlebars.compile(file);
     console.log(fileCompiled);
@@ -69,7 +115,7 @@ class PDFController {
       waitUntil,
     });
 
-    page.setDefaultNavigationTimeout(10000);
+    page.setDefaultNavigationTimeout(5000);
 
     await page.pdf({
       format: "A4",
@@ -93,7 +139,7 @@ class PDFController {
   }
 }
 
-const certificatoData = {
+const certificatoData: Certificato = {
   numero: 1,
   oggetto: '"Digitalizzazione dei processi e dei procedimenti in adesione"',
   committente: "Autorità Regionale Innovazione Tecnologica",
@@ -137,17 +183,27 @@ const certificatoData = {
     {
       numero: "1",
       data: "01/12/2025",
-      importo: Number("100000000.0"),
+      imponibile: Number("100000000.0"),
+      periodo: "NOVEMBRE-SETTEMBRE 2026",
+      iva: Number("22000000.0"),
+      percentualeIva: 0.22,
     },
     {
       numero: "2",
       data: "01/12/2026",
-      importo: Number("105200000.0"),
+      imponibile: Number("105200000.0"),
+      detrazione: -5_000_000,
+      periodo: "NOVEMBRE-SETTEMBRE 2026",
+      iva: Number("22000000.0"),
+      percentualeIva: 0.22,
     },
     {
       numero: "2",
       data: "01/12/2026",
-      importo: Number("105200000.0"),
+      imponibile: Number("105200000.0"),
+      periodo: "NOVEMBRE-SETTEMBRE 2026",
+      iva: Number("22000000.0"),
+      percentualeIva: 0.22,
     },
   ],
   sintesiCertificato: [

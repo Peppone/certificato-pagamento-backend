@@ -23,6 +23,7 @@ type CorpoCertificato = {
 
 type SalCertificato = {
 	numero: string | number;
+  periodo: string | Date;
 	imponibile: string;
 	ritenuta: string;
 	iva: string;
@@ -34,6 +35,9 @@ type SalCertificato = {
 type FatturaCertificato = {
 	numero: string | number;
 	data: string | Date;
-	importo: number;
-	periodo?: string | Date;
+	imponibile: number;
+  detrazione?: number;
+  iva: number;
+  percentualeIva: number;
+	periodo: string | Date;
 }
