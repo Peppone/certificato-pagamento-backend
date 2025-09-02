@@ -1,0 +1,186 @@
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Certificato di pagamento</title>
+	<style>
+		* {
+			box-sizing: content-box;
+		}
+
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 10px;
+		}
+
+		h1 {
+			font-size: 16px;
+			margin-bottom: 10px;
+		}
+
+		.header {
+			text-align: center;
+		}
+
+		.description td,
+		.description th {
+			padding: 5px 2px;
+			text-align: left;
+			font-size: small;
+			font-weight: bold;
+		}
+
+		.description .left-td {
+			text-align: left;
+			padding-right: 15px;
+			font-size: 10px;
+
+		}
+
+		.description .right-td {
+			font-size: 10px;
+		}
+
+		.main {
+			/*display: grid;
+			grid-template-columns: 200px 500px 20px;*/
+		}
+
+		.sidetable {
+			/*grid-column-start: 1;
+			grid-column-end: 2;*/
+			font-size: xx-small;
+			text-align: center;
+			width: 200px;
+			float: left;
+
+		}
+
+		.sidetable table,
+		.sidetable th,
+		.sidetable td {
+			margin-bottom: 16px;
+			padding: 5px;
+			border: 1px solid black;
+			border-collapse: collapse;
+			word-break: break-all;
+			overflow: hidden;
+			font-size: xx-small;
+		}
+
+		.center-bold {
+			text-align: center;
+			font-weight: bold;
+		}
+
+		.content {
+			grid-column-start: 2;
+			grid-column-end: 3;
+			width: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="header">
+		<div style="text-align: center; font-size: 12px">Repubblica Italiana</div>
+		<img src="https://www.regione.sicilia.it/sites/default/files/2021-03/Stemma.png" width="50" alt="Logo">
+
+		<div style="text-align: center; font-size: 10px">Regione Siciliana</div>
+		<div style="text-align: center; font-size: 10px">Assessorato Regionale dell’Economia</div>
+		<div style="text-align: center; font-size: 10px">Autorità Regionale per l'Innovazione Tecnologica</div>
+	</div>
+	<div class="description">
+		<table>
+			<tr>
+				<td class="left-td">Oggetto:</td>
+				<td class="right-td">{{oggetto}}</td>
+			</tr>
+			<tr>
+				<td class="left-td">Committente:</td>
+				<td class="right-td">{{committente}}</td>
+			</tr>
+			<tr>
+				<td class="left-td">Impresa:</td>
+				<td class="right-td">{{impresa}}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="main">
+		<h1 class="center-bold">Certificato di pagamento n. {{numero}}</h1>
+		<div class="content">
+			{{#if certificate}}
+			<div class="sidetable">
+				<table>
+					<tr>
+						<td colspan="3" class="center-bold">Certificati precedenti</td>
+					</tr>
+					<tr>
+						<th>N.</th>
+						<th>Data</th>
+						<th>Importo</th>
+					</tr>
+					{{#each certificate}}
+					<tr>
+						<td>{{certnumber}}</td>
+						<td>{{certdate}}</td>
+						<td>{{certamount}}</td>
+					</tr>
+					{{/each}}
+					<tr>
+						<td colspan="2" class="center-bold">Totale</td>
+						<td>{{totaleSintesiCertificato}}</td>
+					</tr>
+				</table>
+			</div>
+			{{/if}}
+			<div class="content">
+				{{#if corpo.header}}
+				<p>{{corpo.header}}</p>
+				{{/if}}
+				<p>{{corpo.body}}</p>
+				{{#if corpo.footer}}
+				<div>{{corpo.footer}}</div>
+				{{/if}}
+				<ul>
+					{{#each sal}}
+					<li>
+						<p>{{this.numero}} SAL relativo al periodo {{this.periodo}}, imponibile: {{this.imponibile}},
+							ritenuta applicata: {{this.ritenuta}}, di cui IVA: {{this.iva}}
+							{{#if this.quotaSospesa}}
+							comprensivo della quota sospesa: {{this.quotaSospesa}}
+							{{/if}}
+							per un totale di
+							{{this.lordo}}.
+							{{#if this.altro}}
+							{{this.altro}}
+							{{/if}}
+						</p>
+					</li>
+					{{/each}}
+				</ul>
+				<p>
+					ed in ragione di ciò, sono state emesse le seguenti fatture, comprensive della trattenuta dello 0,5%
+					di cui all'art.11,
+					6° comma del D.Lgs 36/2023, come previsto dal contratto esecutivo per ciascuno dei SAL:
+				</p>
+				<table>
+					<tr>
+						<th>Fattura</th>
+						<th>Data</th>
+						<th>Importo</th>
+					</tr>
+					{{#each fatture}}
+					<tr>
+						<td>{{this.numero}}</td>
+						<td>{{this.data}}</td>
+						<td>{{this.importo}}</td>
+					</tr>
+					{{/each}}
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Certificato di pagamento</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+			}
+
+			.user {
+				margin-bottom: 20px;
+				padding: 10px;
+				border: 1px solid #eee;
+			}
+			.header {
+				background: #f5f5f5;
+				padding: 20px;
+				text-align: center;
+			}
+			.description td, .description th {
+					padding: 10px 2px;
+					text-align: left;
+					font-size: small;
+					font-weight: bold;
+			}
+			.description .left-td {
+				text-align: right;
+			}
+
+			.main {
+				display: grid;
+				grid-template-columns: 25% auto;
+			}
+
+		.sidetable {
+			width: 50%;
+			grid-column-start: 1;
+			grid-column-end: 2;
+			font-size: xx-small;
+			text-align: center;
+		}
+
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<h1>Certificato di Pagamento n. {{number}}</h1>
+			<p>Generated on {{date}}</p>
+		</div>
+		<div class="description">
+		<table>
+			<tr>
+				<td class="left-td">Oggetto:</td>
+				<td>{{oggetto}}</td>
+			</tr>
+			<tr>
+				<td class="left-td">Committente:</td>
+				<td>{{committente}}</td>
+			</tr>
+			<tr>
+				<td class="left-td">Impresa:</td>
+				<td>{{impresa}}</td>
+			</tr>
+		</table>
+		</div>
+		<div class="main">
+			<div class="sidetable">
+				<table>
+					<tr>
+						<th>N</th>
+						<th>Data</th>
+						<th>Importo</th>
+					</tr>
+					{{#each certificate}}
+					<tr>
+						<td>{{certnumber}}</td>
+						<td>{{certdate}}</td>
+						<td>{{certamount}}</td>
+					</tr>
+					{{/each}}
+				</table>
+			</div>
+		</div>
+		{{#each users}}
+		<div class="user">
+			<h2>{{name}}</h2>
+			<p>Age: {{age}}</p>
+			<p>Email: {{email}}</p>
+		</div>
+		{{/each}}
+	</body>
+</html>
