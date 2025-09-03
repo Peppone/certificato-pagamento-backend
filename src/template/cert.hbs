@@ -10,7 +10,7 @@
 
 		body {
 			font-family: Arial, sans-serif;
-			font-size: 10px;
+			font-size: 11px;
 		}
 
 		h1 {
@@ -33,12 +33,12 @@
 		.description .left-td {
 			text-align: left;
 			padding-right: 15px;
-			font-size: 10px;
+			font-size: 11px;
 
 		}
 
 		.description .right-td {
-			font-size: 10px;
+			font-size: 11px;
 		}
 
 		.main {
@@ -82,6 +82,11 @@
 			font-size: 12px;
 			padding: 5px;
 			border-collapse: collapse;
+		}
+
+		.bottom-note {
+			padding: 2px;
+			font-size: 10px;
 		}
 
 		.invoice-header th {
@@ -183,19 +188,19 @@
 			display: flex;
 			flex-direction: row;
 			justify-content: center;
-			padding-top: 16px;
-			padding-bottom: 16px;
+			padding-top: 5px;
+			padding-bottom: 5px;
 		}
 	</style>
 </head>
 
 <body>
 	<div class="header">
-		<div style="text-align: center; font-size: 12px">Repubblica Italiana</div>
+		<div style="text-align: center; font-size: 13px">Repubblica Italiana</div>
 		<img src="https://www.regione.sicilia.it/sites/default/files/2021-03/Stemma.png" width="50" alt="Logo">
-		<div style="text-align: center; font-size: 10px">Regione Siciliana</div>
-		<div style="text-align: center; font-size: 10px">Assessorato Regionale dell’Economia</div>
-		<div style="text-align: center; font-size: 10px">Autorità Regionale per l'Innovazione Tecnologica</div>
+		<div style="text-align: center; font-size: 12px">Regione Siciliana</div>
+		<div style="text-align: center; font-size: 12px">Assessorato Regionale dell’Economia</div>
+		<div style="text-align: center; font-size: 12px">Autorità Regionale per l'Innovazione Tecnologica</div>
 	</div>
 	<div class="description">
 		<table>
@@ -289,26 +294,6 @@
 							<td>{{this.periodo}}</td>
 							<td>
 								<table class="inner-table">
-									{{#if this.detrazione}}
-									<tr class="inner-row low-padding">
-										<td>
-											Ammontare
-										</td>
-										<td class="credit">
-											{{this.ammontare}}
-										</td>
-									</tr>
-									{{/if}}
-									{{#if this.detrazione}}
-									<tr class="inner-row low-padding">
-										<td>
-											Detrazione
-										</td>
-										<td class="debit">
-											{{this.detrazione}}
-										</td>
-									</tr>
-									{{/if}}
 									<tr class="inner-row">
 										<td>
 											Imponibile*
@@ -345,7 +330,7 @@
 							<td>{{totaleDetrazione}}</td>
 						</tr>
 						<tr>
-							<td colspan="6" class="invoice-header">* comprensivo della trattenuta dello 0,5% di cui
+							<td colspan="6" class="bottom-note">* comprensivo della trattenuta dello 0,5% di cui
 								all'art.11, 6° comma del D.Lgs 36/2023</td>
 						</tr>
 					</table>
@@ -356,7 +341,8 @@
 					<p>che i termini del contratto sopra richiamato e per effetto dei SAL e delle fatture sopra
 						richiamate
 						risulta un credito pari a {{totale}} ({{totaleStringNum}}) oltre {{totaleIva}}
-						({{totaleIvaStringNum}}) per IVA in split payment così ripartito:
+						({{totaleIvaStringNum}}) per IVA in split payment ripartito come riportato nella seguente
+						tabella e che è possibile procedere al pagamento delle sopra citate fatture.
 					</p>
 					<div class="invoice-table-container">
 						<table class="border-collapse">
@@ -365,7 +351,7 @@
 								<th>Totale</th>
 							</tr>
 							{{#each totalePerDitta}}
-							<tr class="invoice-row final-row">
+							<tr class="invoice-row">
 								<td>
 									{{this.ragioneSociale}}
 								</td>
@@ -376,14 +362,10 @@
 							{{/each}}
 						</table>
 					</div>
-					<p>
-						e che pertanto può procedersi al pagamento
-						delle sopra citate fatture.
-					</p>
 				</div>
 			</div>
 			<footer>
-				<div style="display:flex; padding-top:5px; justify-content: space-between; align-items: center;">
+				<div style="display:flex; padding-top:5px; min-height:1.5cm; justify-content: space-between; align-items: center;">
 					<div>
 						<p>Palermo, {{dataCertificato}}</p>
 					</div>

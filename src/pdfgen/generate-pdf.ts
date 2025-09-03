@@ -3,7 +3,7 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import { dirname, join } from "path";
 import Handlebars from "handlebars";
-import type { Certificato, ImportoDitta } from "./type/certificate.ts";
+import type { Certificato } from "./type/certificate.ts";
 import conv_iac from "./num-util.js";
 
 class PDFController {
@@ -195,7 +195,7 @@ class PDFController {
       waitUntil,
     });
 
-    page.setDefaultNavigationTimeout(5000);
+    page.setDefaultNavigationTimeout(10000);
 
     await page.pdf({
       format: "A4",
@@ -222,9 +222,9 @@ class PDFController {
 
 const certificatoData: Certificato = {
   numero: 1,
-  oggetto: '"Digitalizzazione dei processi e dei procedimenti in adesione"',
+  oggetto: '"Progetto innovativo tecnologico - misura 1234"',
   committente: "Autorità Regionale Innovazione Tecnologica",
-  impresa: "RTI IBM Italia S.p.A. mandanti S1, S2, S3",
+  impresa: "RTI A Italia S.r.l. mandanti B, C, D",
   corpo: {
     /*header:
       "che sostituisce il precedente certificato di pagamento numero 1 emesso in data " +
@@ -232,11 +232,11 @@ const certificatoData: Certificato = {
       "IBM S.p.a che annulla la fattura 6836610392 del 10/11/2024 e la riemissione di " +
       "nuova fattura con numero 6836624842 in data 24/06/2025.",*/
     body:
-      "La sottoscritta, Avv. Vitalba Vaccaro, nella qualità di Responsabile Unico del " +
-      "Progetto ammesso a finanziamento con con D.D.G 97 del 24/06/2024 VISTO: il " +
-      "Contratto esecutivo relativo all'ordine di acquisto diretto n. 7379100, " +
-      "sottoscritto digitalmente in data 16/08/2023, con CIG derivato: A0052ADAB9, CUP: " +
-      "G71C22001550002, Codice Caronte SI_1_34253 con il quale è stata affidata all'Impresa " +
+      "Il sottoscritto, TizioCaio , nella qualità di Responsabile Unico del " +
+      "Progetto ammesso a finanziamento con con D.D.G XX del YY/ZZ/WWWW VISTO: il " +
+      "Contratto esecutivo relativo all'ordine di acquisto diretto n. 1234567, " +
+      "sottoscritto digitalmente in data 99/99/2099, con CIG derivato: A1232DAD25, CUP: " +
+      "G71C11548551234, Codice Caronte SI_1_32547 con il quale è stata affidata all'Impresa " +
       "l'esecuzione della su indicata fornitura e validato dalla regioneria come si evince " +
       "dalla piattaforma contabile regionale, SCORE",
     //footer: "Altra prova prova prova",
@@ -268,7 +268,7 @@ const certificatoData: Certificato = {
       periodo: "NOVEMBRE-SETTEMBRE 2026",
       iva: Number("22000000.0"),
       percentualeIva: 0.22,
-      ragioneSociale: "A",
+      ragioneSociale: "Azienda A Italia S.r.l",
     },
     {
       numero: "2",
@@ -292,6 +292,124 @@ const certificatoData: Certificato = {
   ],
   sintesiCertificato: [
     {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },
+        {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },    {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },    {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },    {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },
+        {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },
+        {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },
+        {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },
+        {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },
+        {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },
+        {
+      certnumber: "1",
+      certdate: "01/12/2025",
+      certamount: 100_000_000.0,
+    },
+
+    {
+      certnumber: "2",
+      certdate: "01/12/2026",
+      certamount: 105_200_000.0,
+    },
+        {
       certnumber: "1",
       certdate: "01/12/2025",
       certamount: 100_000_000.0,
