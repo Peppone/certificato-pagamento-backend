@@ -1,0 +1,63 @@
+import express, { Router, type NextFunction } from "express";
+import { PDFController } from "./pdfgen/generate-pdf.js";
+import { certificationData } from "./pdfgen/const.js";
+import path, { dirname } from "path";
+import { fileURLToPath } from "url";
+
+const app = express();
+
+const router = Router();
+
+const controller = new PDFController();
+
+const createCertification = (req: Request, res: Response, next: NextFunction) => {
+   try {
+    return controller.index(certificationData);
+  } catch (error) {
+    next(error);
+  }
+};  
+
+
+//router.get("/", createCertification);
+
+// Routes
+app.use(express.static("images"));
+
+export interface AppError extends Error {
+  status?: number;
+}
+
+/*const errorHandler = (
+  err: AppError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  console.error(err);
+  res.status(err.status || 500).json({
+    message: err.message || "Internal Server Error",
+  });
+};*/
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+console.log(path.join(__dirname, "/images"));
+app.use("/generate", createCertification as any);
+app.use("/images", express.static(path.join(__dirname, "/images")));
+//app.use(errorHandler);
+
+interface Config {
+  port: number;
+  nodeEnv: string;
+}
+
+const config: Config = {
+  port: Number(process.env.PORT) || 3000,
+  nodeEnv: process.env.NODE_ENV || "development",
+};
+
+app.listen(config.port, () => {
+  console.log(`Server running on port ${config.port}`);
+});
