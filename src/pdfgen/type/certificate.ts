@@ -13,6 +13,7 @@ export type Certificato = {
   sal: SalCertificato[];
   fatture: FatturaCertificato[];
   sintesiCertificato?: SintesiCertificato[];
+  dataCertificato?: string | Date;
 };
 
 type CorpoCertificato = {
@@ -35,9 +36,12 @@ type SalCertificato = {
 type FatturaCertificato = {
 	numero: string | number;
 	data: string | Date;
-	imponibile: number;
+	ammontare: number;
   detrazione?: number;
   iva: number;
   percentualeIva: number;
 	periodo: string | Date;
+  ragioneSociale: string;
 }
+
+export type ImportoDitta = Map<string, number>;

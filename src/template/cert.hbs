@@ -145,9 +145,23 @@
 			border: none;
 		}
 
+		.inner-table .inner-row:nth-last-child(2) td {
+			border-top: 1pt solid black;
+		}
+
+		.inner-table .inner-row:first-child td {
+			border-top: none;
+		}
+
+
 		.inner-row td:first-child {
 			text-align: left;
 			border: none
+		}
+
+		.low-padding td {
+			padding-top: 1px;
+			padding-bottom: 0px;
 		}
 
 		.inner-row td:last-child {
@@ -166,13 +180,12 @@
 		}
 
 		.invoice-table-container {
-			display:flex;
-			flex-direction:row;
-			justify-content:center;
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
 			padding-top: 16px;
 			padding-bottom: 16px;
 		}
-
 	</style>
 </head>
 
@@ -180,7 +193,6 @@
 	<div class="header">
 		<div style="text-align: center; font-size: 12px">Repubblica Italiana</div>
 		<img src="https://www.regione.sicilia.it/sites/default/files/2021-03/Stemma.png" width="50" alt="Logo">
-
 		<div style="text-align: center; font-size: 10px">Regione Siciliana</div>
 		<div style="text-align: center; font-size: 10px">Assessorato Regionale dell’Economia</div>
 		<div style="text-align: center; font-size: 10px">Autorità Regionale per l'Innovazione Tecnologica</div>
@@ -264,28 +276,31 @@
 						<tr class="invoice-header">
 							<th>Fattura</th>
 							<th>Data</th>
+							<th>Ragione Sociale</th>
 							<th>Periodo</th>
 							<th>Voci</th>
 							<th>Totale</th>
-
 						</tr>
 						{{#each fatture}}
 						<tr class="invoice-row">
 							<td>{{this.numero}}</td>
 							<td>{{this.data}}</td>
+							<td>{{this.ragioneSociale}}</td>
 							<td>{{this.periodo}}</td>
 							<td>
 								<table class="inner-table">
-									<tr class="inner-row">
+									{{#if this.detrazione}}
+									<tr class="inner-row low-padding">
 										<td>
-											Credito
+											Ammontare
 										</td>
 										<td class="credit">
-											{{this.imponibile}}
+											{{this.ammontare}}
 										</td>
 									</tr>
+									{{/if}}
 									{{#if this.detrazione}}
-									<tr class="inner-row">
+									<tr class="inner-row low-padding">
 										<td>
 											Detrazione
 										</td>
@@ -294,7 +309,14 @@
 										</td>
 									</tr>
 									{{/if}}
-									{{#if this.iva}}
+									<tr class="inner-row">
+										<td>
+											Imponibile*
+										</td>
+										<td class="credit">
+											{{this.imponibile}}
+										</td>
+									</tr>
 									<tr class="inner-row">
 										<td>
 											IVA ({{this.percentualeIva}})
@@ -302,21 +324,74 @@
 										<td class="credit">
 											{{this.iva}}
 										</td>
+
 									</tr>
-									{{/if}}
 								</table>
 							</td>
-							<td>{{this.totale}}</td>
+							<td>{{totale}}</td>
 						</tr>
 						{{/each}}
 						<tr class="invoice-row final-row">
-							<td colspan="4" class="invoice-header">Totale Credito</td>
+							<td colspan="5" class="invoice-header">Totale pagamento fatture</td>
 							<td>{{totale}}</td>
 						</tr>
+						<tr class="invoice-row">
+							<td colspan="5" class="invoice-header">di cui IVA</td>
+							<td>{{totaleIva}}</td>
+						</tr>
+						<tr class="invoice-row">
+							<td colspan="5" class="invoice-header">di cui trattenute 0,5% art.11, 6° comma del
+								D.Lgs 36/2023</td>
+							<td>{{totaleDetrazione}}</td>
+						</tr>
+						<tr>
+							<td colspan="6" class="invoice-header">* comprensivo della trattenuta dello 0,5% di cui
+								all'art.11, 6° comma del D.Lgs 36/2023</td>
+						</tr>
 					</table>
+
 				</div>
 				<h1 class="center-bold">CERTIFICA</h1>
+				<div>
+					<p>che i termini del contratto sopra richiamato e per effetto dei SAL e delle fatture sopra
+						richiamate
+						risulta un credito pari a {{totale}} ({{totaleStringNum}}) oltre {{totaleIva}}
+						({{totaleIvaStringNum}}) per IVA in split payment così ripartito:
+					</p>
+					<div class="invoice-table-container">
+						<table class="border-collapse">
+							<tr class="invoice-header">
+								<th>Ragione Sociale</th>
+								<th>Totale</th>
+							</tr>
+							{{#each totalePerDitta}}
+							<tr class="invoice-row final-row">
+								<td>
+									{{this.ragioneSociale}}
+								</td>
+								<td>
+									{{this.totale}}
+								</td>
+							</tr>
+							{{/each}}
+						</table>
+					</div>
+					<p>
+						e che pertanto può procedersi al pagamento
+						delle sopra citate fatture.
+					</p>
+				</div>
 			</div>
+			<footer>
+				<div style="display:flex; padding-top:5px; justify-content: space-between; align-items: center;">
+					<div>
+						<p>Palermo, {{dataCertificato}}</p>
+					</div>
+					<div>
+						<p>Il Responsabile Unico del Progetto</p>
+					</div>
+				</div>
+			</footer>
 		</div>
 	</div>
 </body>

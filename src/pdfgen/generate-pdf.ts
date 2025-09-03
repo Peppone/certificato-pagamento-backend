@@ -3,7 +3,8 @@ import puppeteer from "puppeteer";
 import fs from "fs";
 import { dirname, join } from "path";
 import Handlebars from "handlebars";
-import type { Certificato } from "./type/certificate.js";
+import type { Certificato, ImportoDitta } from "./type/certificate.ts";
+import conv_iac from "./num-util.js";
 
 class PDFController {
   async index(certificato: Certificato) {
@@ -35,8 +36,26 @@ class PDFController {
       })
     );
     let totale = 0;
+    let totaleIva = 0;
+    let totaleImponibile = 0;
+    let totaleDetrazione = 0;
+
     const formattedFatture = certificato.fatture.map(
-      ({ imponibile, detrazione, iva, percentualeIva, ...rest }) => {
+      ({
+        ammontare,
+        detrazione,
+        iva,
+        percentualeIva,
+        ragioneSociale,
+        ...rest
+      }) => {
+        const imponibile = ammontare + (detrazione ?? 0);
+
+        const formattedAmmontare = new Intl.NumberFormat("it-IT", {
+          style: "currency",
+          currency: "EUR",
+        }).format(ammontare);
+
         const formattedImponibile = new Intl.NumberFormat("it-IT", {
           style: "currency",
           currency: "EUR",
@@ -56,9 +75,12 @@ class PDFController {
             currency: "EUR",
           }).format(iva);
 
-        const partTotale = imponibile + (detrazione || 0) + iva;
+        const partTotale = imponibile + iva;
 
         totale += partTotale;
+        totaleIva += iva || 0;
+        totaleImponibile += imponibile;
+        totaleDetrazione += detrazione || 0;
 
         const formattedPartTotale = new Intl.NumberFormat("it-IT", {
           style: "currency",
@@ -73,13 +95,33 @@ class PDFController {
 
         return {
           ...rest,
+          ammontare: formattedAmmontare,
           imponibile: formattedImponibile,
           detrazione: formattedDetrazione,
           totale: formattedPartTotale,
           iva: formattedIva,
           percentualeIva: formattedPercentualeIva,
+          ragioneSociale,
         };
       }
+    );
+
+    const totalePerDitta = certificato.fatture.reduce(
+      (prev, { ragioneSociale, ammontare, detrazione, iva }) => {
+        let partTotalePerDitta = 0;
+
+        if (prev.has(ragioneSociale)) {
+          partTotalePerDitta = prev.get(ragioneSociale) ?? 0;
+        }
+
+        prev.set(
+          ragioneSociale,
+          partTotalePerDitta + ammontare + (detrazione ?? 0) + iva
+        );
+
+        return prev;
+      },
+      new Map<string, number>()
     );
 
     const totaleSintesiCertificato =
@@ -99,13 +141,51 @@ class PDFController {
       currency: "EUR",
     }).format(totale);
 
+    const formattedTotaleIva = new Intl.NumberFormat("it-IT", {
+      style: "currency",
+      currency: "EUR",
+    }).format(totaleIva);
+
+    const formattedTotaleImponibile = new Intl.NumberFormat("it-IT", {
+      style: "currency",
+      currency: "EUR",
+    }).format(totaleImponibile);
+
+    const formattedTotaleDetrazione = new Intl.NumberFormat("it-IT", {
+      style: "currency",
+      currency: "EUR",
+    }).format(totaleDetrazione);
+
+    const sortedTotalePerDitta = Array.from(totalePerDitta.entries()).sort(
+      ([ragA, totA], [ragB, totB]) => ragA.localeCompare(ragB)
+    );
+
+    const formattedTotalePerDitta = sortedTotalePerDitta.map(([rag, tot]) => ({
+      ragioneSociale:rag,
+      totale: new Intl.NumberFormat("it-IT", {
+        style: "currency",
+        currency: "EUR",
+      }).format(tot),
+  }));
+
+    console.log("AAAAA");
+    console.log(formattedTotalePerDitta);
     const data = {
       ...certificato,
       certificate: formattedSintesiCertificato,
       totaleSintesiCertificato,
       fatture: formattedFatture,
       totale: formattedTotale,
+      totaleImponibile: formattedTotaleImponibile,
+      totaleIva: formattedTotaleIva,
+      totaleStringNum: conv_iac(totale),
+      totaleIvaStringNum: conv_iac(totaleIva),
+      totaleDetrazione: formattedTotaleDetrazione,
+      dataCertificato:
+        certificato.dataCertificato ?? new Date().toLocaleDateString("it-IT"),
+      totalePerDitta: formattedTotalePerDitta,
     };
+
     const fileCompiled = Handlebars.compile(file);
     console.log(fileCompiled);
     const fileHTML = fileCompiled(data);
@@ -124,6 +204,7 @@ class PDFController {
       preferCSSPageSize: false,
       printBackground: true,
       margin: {
+        top: "10mm",
         left: "10mm",
         right: "10mm",
       },
@@ -183,27 +264,30 @@ const certificatoData: Certificato = {
     {
       numero: "1",
       data: "01/12/2025",
-      imponibile: Number("100000000.0"),
+      ammontare: Number("100000000.0"),
       periodo: "NOVEMBRE-SETTEMBRE 2026",
       iva: Number("22000000.0"),
       percentualeIva: 0.22,
+      ragioneSociale: "A",
     },
     {
       numero: "2",
       data: "01/12/2026",
-      imponibile: Number("105200000.0"),
+      ammontare: Number("105200000.0"),
       detrazione: -5_000_000,
       periodo: "NOVEMBRE-SETTEMBRE 2026",
       iva: Number("22000000.0"),
       percentualeIva: 0.22,
+      ragioneSociale: "A",
     },
     {
       numero: "2",
       data: "01/12/2026",
-      imponibile: Number("105200000.0"),
+      ammontare: Number("105200000.0"),
       periodo: "NOVEMBRE-SETTEMBRE 2026",
       iva: Number("22000000.0"),
       percentualeIva: 0.22,
+      ragioneSociale: "B",
     },
   ],
   sintesiCertificato: [
