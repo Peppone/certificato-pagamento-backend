@@ -87,7 +87,6 @@ export const certificationData: Certificato = {
       certdate: "01/12/2025",
       certamount: 100_000_000.0,
     },
-
     {
       certnumber: "2",
       certdate: "01/12/2026",
