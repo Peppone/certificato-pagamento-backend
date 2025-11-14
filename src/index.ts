@@ -3,6 +3,11 @@ import { PDFController } from "./pdfgen/generate-pdf.js";
 import { certificationData } from "./pdfgen/const.js";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
+import { parseFattura } from "./parser/receipt.js";
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/node-postgres';
+
+const db = drizzle(process.env.DATABASE_URL!);
 
 const app = express();
 
@@ -46,6 +51,11 @@ const __dirname = dirname(__filename);
 console.log(path.join(__dirname, "/images"));
 app.use("/generate", createCertification as any);
 app.use("/images", express.static(path.join(__dirname, "/images")));
+app.post("/parseFattura", async (req, res) => {
+  const result = await parseFattura();
+  console.log(result);
+  res.send(result);
+});
 //app.use(errorHandler);
 
 interface Config {
