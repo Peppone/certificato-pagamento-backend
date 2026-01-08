@@ -1,0 +1,23 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.user {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #eee;
+}
+.header {
+    background: #f5f5f5;
+    padding: 20px;
+    text-align: center;
+}
+.description td, .description th {
+        padding: 10px 2px;
+        text-align: left;
+        font-size: small;
+        font-weight: bold;
+}
+.description .left-td {
+    text-align: right;
+}

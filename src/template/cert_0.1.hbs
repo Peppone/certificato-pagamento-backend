@@ -1,0 +1,120 @@
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Certificato di pagamento</title>
+		<style>
+
+			* {
+				box-sizing: content-box;
+			}
+
+			body {
+				font-family: Arial, sans-serif;
+				font-size: 10px;
+			}
+
+			h1 {
+				font-size: 16px;
+				margin-bottom: 10px;
+			}
+			.header {
+				text-align: center;
+			}
+			.description td, .description th {
+					padding: 5px 2px;
+					text-align: left;
+					font-size: small;
+					font-weight: bold;
+			}
+			.description .left-td {
+				text-align: left;
+				padding-right: 15px;
+				font-size: 10px;
+
+			}
+			.description .right-td {
+				font-size: 10px;
+			}
+
+			.main {
+				display: grid;
+				grid-template-columns: 200px 500px 20px;
+			}
+
+		.sidetable {
+			grid-column-start: 1;
+			grid-column-end: 2;
+			font-size: xx-small;
+			text-align: center;
+			width: 200px;
+		}
+
+		.sidetable table, .sidetable th, .sidetable td {
+			padding: 3px;
+			border: 1px solid black;
+  			border-collapse: collapse;
+			word-break: break-all;
+			overflow: hidden;
+			font-size: xx-small;
+		}
+
+		.content {
+			grid-column-start: 2;
+			grid-column-end: 3;
+			width:300px;
+		}
+
+		</style>
+	</head>
+	<body>
+		<div class="header">
+			<div style="text-align: center; font-size: 12px">Repubblica Italiana</div>
+			<img src="https://www.regione.sicilia.it/sites/default/files/2021-03/Stemma.png" width="50" alt="Logo">
+
+			<div style="text-align: center; font-size: 10px">Regione Siciliana</div>
+			<div style="text-align: center; font-size: 10px">Assessorato Regionale dell’Economia</div>
+			<div style="text-align: center; font-size: 10px">Autorità Regionale per l'Innovazione Tecnologica</div>
+			<h1>Certificato di pagamento n. {{numero}}</h1>
+		</div>
+		<div class="description">
+		<table>
+			<tr>
+				<td class="left-td">Oggetto:</td>
+				<td class="right-td">{{oggetto}}</td>
+			</tr>
+			<tr>
+				<td class="left-td">Committente:</td>
+				<td class="right-td">{{committente}}</td>
+			</tr>
+			<tr>
+				<td class="left-td">Impresa:</td>
+				<td class="right-td">{{impresa}}</td>
+			</tr>
+		</table>
+		</div>
+		<div class="main">
+				<div class="sidetable">
+					<table>
+						<tr>
+							<td colspan="3">Certificati precedenti</td>
+						</tr>
+						<tr>
+							<th>N.</th>
+							<th>Data</th>
+							<th>Importo</th>
+						</tr>
+						{{#each certificate}}
+						<tr>
+							<td>{{certnumber}}</td>
+							<td>{{certdate}}</td>
+							<td>{{certamount}}</td>
+						</tr>
+						{{/each}}
+					</table>
+				</div>
+				<div class="content">
+					<p>Il presente certificato di pagamento sdfgghdsfagsdfgsdfgsdfgdsfgdfsgdsfgdfsgdsfgsdfgsdfgdsfgsdfgsdfgfdsgd</p>
+					<p>Data di emissione: {{date}}</p>
+			</div>
+	</body>
+</html>

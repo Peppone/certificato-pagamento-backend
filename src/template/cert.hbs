@@ -1,0 +1,384 @@
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Certificato di pagamento</title>
+	<style>
+		* {
+			box-sizing: content-box;
+		}
+
+		body {
+			font-family: Arial, sans-serif;
+			font-size: 11px;
+		}
+
+		h1 {
+			font-size: 16px;
+			margin-bottom: 10px;
+		}
+
+		.header {
+			text-align: center;
+		}
+
+		.description td,
+		.description th {
+			padding: 5px 2px;
+			text-align: left;
+			font-size: small;
+			font-weight: bold;
+		}
+
+		.description .left-td {
+			text-align: left;
+			padding-right: 15px;
+			font-size: 12px;
+			padding-bottom: 0;
+
+		}
+
+		.description .right-td {
+			font-size: 12px;
+			padding-bottom: 0;
+		}
+
+		.main {
+			/*display: grid;
+			grid-template-columns: 200px 500px 20px;*/
+		}
+
+		.sidetable {
+			/*grid-column-start: 1;
+			grid-column-end: 2;*/
+			font-size: xx-small;
+			text-align: center;
+			width: 200px;
+			float: left;
+		}
+
+		.sidetable table,
+		.sidetable th,
+		.sidetable td {
+			margin-bottom: 16px;
+			padding: 5px;
+			border: 1px solid black;
+			border-collapse: collapse;
+			word-break: break-all;
+			overflow: hidden;
+			font-size: xx-small;
+		}
+
+		.center-bold {
+			text-align: center;
+			font-weight: bold;
+		}
+
+		.content {
+			grid-column-start: 2;
+			grid-column-end: 3;
+			width: 100%;
+		}
+
+		.invoice-header {
+			font-size: 12px;
+			padding: 5px;
+			border-collapse: collapse;
+		}
+
+		.bottom-note {
+			padding: 2px;
+			font-size: 10px;
+		}
+
+		.invoice-header th {
+			border-bottom: 1pt solid black;
+			border-top: 1pt solid black;
+			border-left: 1pt solid black;
+			padding: 5px;
+		}
+
+		.invoice-header th:first-child {
+			border-right: 1pt solid black;
+		}
+
+		.invoice-header th:last-child {
+			border-right: 1pt solid black;
+		}
+
+		.invoice-header th:not(:first-child):not(:last-child) {
+			border-left: 1pt solid black;
+			border-right: 1pt solid black;
+		}
+
+		.invoice-row td {
+			padding: 5px;
+			font-size: 10px;
+			text-align: center;
+			border-collapse: collapse;
+			border-bottom: 1pt solid black;
+		}
+
+		.invoice-row td:first-child {
+			border-right: 1pt solid black;
+			border-left: 1pt solid black;
+		}
+
+		.invoice-row td:last-child {
+			border-right: 1pt solid black;
+		}
+
+		.invoice-row td:not(:first-child):not(:last-child) {
+			border-left: 1pt solid black;
+			border-right: 1pt solid black;
+		}
+
+		.final-row td {
+			font-size: 12px;
+			font-weight: bold;
+			border-top: 1pt solid black;
+			border-bottom: 1pt solid black;
+			border-left: 1pt solid black;
+		}
+
+		.border-collapse {
+			border-collapse: collapse;
+			padding: 5px;
+		}
+
+		.inner-table {
+			border-collapse: collapse;
+			width: 100%;
+			border: none;
+		}
+
+		.inner-table .inner-row:nth-last-child(2) td {
+			border-top: 1pt solid black;
+		}
+
+		.inner-table .inner-row:first-child td {
+			border-top: none;
+		}
+
+
+		.inner-row td:first-child {
+			text-align: left;
+			border: none
+		}
+
+		.low-padding td {
+			padding-top: 1px;
+			padding-bottom: 0px;
+		}
+
+		.inner-row td:last-child {
+			text-align: right;
+			border: none;
+		}
+
+		.credit {
+			color: rgba(13, 13, 148, 0.877);
+			font-weight: 200;
+		}
+
+		.debit {
+			color: rgb(194, 13, 13);
+			font-weight: 200;
+		}
+
+		.invoice-table-container {
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="header">
+		<div style="text-align: center; font-size: 13px">Repubblica Italiana</div>
+		<img src="http://localhost:3000/images/logo.png" width="50" alt="Logo">
+		<div style="text-align: center; font-size: 12px">Regione Siciliana</div>
+		<div style="text-align: center; font-size: 12px">Assessorato Regionale dell’Economia</div>
+		<div style="text-align: center; font-size: 12px">Autorità Regionale per l'Innovazione Tecnologica</div>
+	</div>
+	<div class="description">
+		<table>
+			<tr>
+				<td class="left-td">Oggetto:</td>
+				<td class="right-td">{{oggetto}}</td>
+			</tr>
+			<tr>
+				<td class="left-td">Committente:</td>
+				<td class="right-td">{{committente}}</td>
+			</tr>
+			<tr>
+				<td class="left-td">Impresa:</td>
+				<td class="right-td">{{impresa}}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="main">
+		<h1 class="center-bold">Certificato di pagamento n. {{numero}}</h1>
+		<div class="content">
+			{{#if certificate}}
+			<div class="sidetable">
+				<table>
+					<tr>
+						<td colspan="3" class="center-bold">Certificati precedenti</td>
+					</tr>
+					<tr>
+						<th>N.</th>
+						<th>Data</th>
+						<th>Importo</th>
+					</tr>
+					{{#each certificate}}
+					<tr>
+						<td>{{certnumber}}</td>
+						<td>{{certdate}}</td>
+						<td>{{certamount}}</td>
+					</tr>
+					{{/each}}
+					<tr>
+						<td colspan="2" class="center-bold">Totale</td>
+						<td>{{totaleSintesiCertificato}}</td>
+					</tr>
+				</table>
+			</div>
+			{{/if}}
+			<div class="content">
+				{{#if corpo.header}}
+				<p>{{corpo.header}}</p>
+				{{/if}}
+				<p>{{corpo.body}}</p>
+				{{#if corpo.footer}}
+				<div>{{corpo.footer}}</div>
+				{{/if}}
+				<ul>
+					{{#each sal}}
+					<li>
+						<p>{{this.numero}} SAL relativo al periodo {{this.periodo}}, imponibile: {{this.imponibile}},
+							ritenuta applicata: {{this.ritenuta}}, di cui IVA: {{this.iva}}
+							{{#if this.quotaSospesa}}
+							comprensivo della quota sospesa: {{this.quotaSospesa}}
+							{{/if}}
+							per un totale di
+							{{this.lordo}}.
+							{{#if this.altro}}
+							{{this.altro}}
+							{{/if}}
+						</p>
+					</li>
+					{{/each}}
+				</ul>
+				<p>
+					ed in ragione di ciò, sono state emesse le seguenti fatture, comprensive della trattenuta dello 0,5%
+					di cui all'art.11,
+					6° comma del D.Lgs 36/2023, come previsto dal contratto esecutivo per ciascuno dei SAL:
+				</p>
+				<div class="invoice-table-container">
+					<table class="border-collapse">
+						<tr class="invoice-header">
+							<th>Fattura</th>
+							<th>Data</th>
+							<th>Ragione Sociale</th>
+							<th>Periodo</th>
+							<th>Voci</th>
+							<th>Totale</th>
+						</tr>
+						{{#each fatture}}
+						<tr class="invoice-row">
+							<td>{{this.numero}}</td>
+							<td>{{this.data}}</td>
+							<td>{{this.ragioneSociale}}</td>
+							<td>{{this.periodo}}</td>
+							<td>
+								<table class="inner-table">
+									<tr class="inner-row">
+										<td>
+											Imponibile*
+										</td>
+										<td class="credit">
+											{{this.imponibile}}
+										</td>
+									</tr>
+									<tr class="inner-row">
+										<td>
+											IVA ({{this.percentualeIva}})
+										</td>
+										<td class="credit">
+											{{this.iva}}
+										</td>
+
+									</tr>
+								</table>
+							</td>
+							<td>{{totale}}</td>
+						</tr>
+						{{/each}}
+						<tr class="invoice-row final-row">
+							<td colspan="5" class="invoice-header">Totale pagamento fatture</td>
+							<td>{{totale}}</td>
+						</tr>
+						<tr class="invoice-row">
+							<td colspan="5" class="invoice-header">di cui IVA</td>
+							<td>{{totaleIva}}</td>
+						</tr>
+						<tr class="invoice-row">
+							<td colspan="5" class="invoice-header">di cui trattenute 0,5% art.11, 6° comma del
+								D.Lgs 36/2023</td>
+							<td>{{totaleDetrazione}}</td>
+						</tr>
+						<tr>
+							<td colspan="6" class="bottom-note">* comprensivo della trattenuta dello 0,5% di cui
+								all'art.11, 6° comma del D.Lgs 36/2023</td>
+						</tr>
+					</table>
+
+				</div>
+				<h1 class="center-bold">CERTIFICA</h1>
+				<div>
+					<p>che i termini del contratto sopra richiamato e per effetto dei SAL e delle fatture sopra
+						richiamate
+						risulta un credito pari a {{totale}} ({{totaleStringNum}}) oltre {{totaleIva}}
+						({{totaleIvaStringNum}}) per IVA in split payment ripartito come riportato nella seguente
+						tabella e che è possibile procedere al pagamento delle sopra citate fatture.
+					</p>
+					<div class="invoice-table-container">
+						<table class="border-collapse">
+							<tr class="invoice-header">
+								<th>Ragione Sociale</th>
+								<th>Totale</th>
+							</tr>
+							{{#each totalePerDitta}}
+							<tr class="invoice-row">
+								<td>
+									{{this.ragioneSociale}}
+								</td>
+								<td>
+									{{this.totale}}
+								</td>
+							</tr>
+							{{/each}}
+						</table>
+					</div>
+				</div>
+			</div>
+			<footer>
+				<div
+					style="display:flex; padding-top:5px; min-height:1.5cm; justify-content: space-between; align-items: center;">
+					<div>
+						<p>Palermo, {{dataCertificato}}</p>
+					</div>
+					<div>
+						<p>Il Responsabile Unico del Progetto</p>
+					</div>
+				</div>
+			</footer>
+		</div>
+	</div>
+</body>
+
+</html>
