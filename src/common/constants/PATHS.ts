@@ -5,6 +5,7 @@ const PATHS = {
   Certificato: {
     _: '/certificato',
     GetAll: '/all',
+    Generate: '/generate'
   },
   Users: {
     _: '/users',

@@ -17,6 +17,7 @@ import CertificatoRepo from '@src/repos/CertificatoRepo';
 const Validators = {
   add: parseReq({ certificato: Certificato.test }),
   modify: parseReq({ certificato: Certificato.test }),
+  generate: parseReq({ data: Certificato.generate })
 } as const;
 
 /******************************************************************************
@@ -42,9 +43,15 @@ async function getAll(req: IReq, res: IRes) {
  * Modify a certificato.
  */
 async function modify(req: IReq, res: IRes) {
-  const { certificato } = Validators.add(req.body);
+  const { certificato } = Validators.modify(req.body);
   await CertificatoService.addOne(certificato);
   res.status(HTTP_STATUS_CODES.Created).end();
+}
+
+async function generate(req: IReq, res: IRes) {
+  const { data } = Validators.generate(req.body);
+  await CertificatoService.generate(data);
+res.status(HTTP_STATUS_CODES.Ok).end();
 }
 /******************************************************************************
                                 Export default
@@ -54,4 +61,5 @@ export default {
   add,
   getAll,
   modify,
+  generate,
 } as const;

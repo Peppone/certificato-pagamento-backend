@@ -12,6 +12,7 @@ const apiRouter = Router();
 
 const certificatoRouter = Router();
 certificatoRouter.post('', CertificatoRoutes.add)
+certificatoRouter.post(PATHS.Certificato.Generate, CertificatoRoutes.generate)
 certificatoRouter.put('', CertificatoRoutes.modify)
 certificatoRouter.get(PATHS.Certificato.GetAll, CertificatoRoutes.getAll)
 // ** Add UserRouter ** //
