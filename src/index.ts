@@ -6,6 +6,8 @@ import { fileURLToPath } from "url";
 import { parseFattura } from "./parser/receipt.js";
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
+import cors from "cors";
+import type { Certificato } from "./pdfgen/type/certificate.js";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -13,15 +15,24 @@ const app = express();
 
 const router = Router();
 
+const corsOption = {
+  credentials: true,
+  origin: ['http://localhost:3000', 'http://localhost:4200']
+}
+
+
+
 const controller = new PDFController();
 
-const createCertification = (req: Request, res: Response, next: NextFunction) => {
-   try {
-    return controller.index(certificationData);
+const createCertification = (req: any, res: any, next?: NextFunction) => {
+  try {
+    console.log(req.body)
+    return controller.index(certificationData as unknown as Certificato);
   } catch (error) {
-    next(error);
+    next?.(error);
   }
-};  
+  return {};
+};
 
 
 //router.get("/", createCertification);
@@ -49,8 +60,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 console.log(path.join(__dirname, "/images"));
-app.use("/generate", createCertification as any);
+app.use(express.json());
+app.post("/certificato/generate", async (req, res) => {
+  createCertification(req, res);
+});
 app.use("/images", express.static(path.join(__dirname, "/images")));
+app.use(cors(corsOption));
 app.post("/parseFattura", async (req, res) => {
   const result = await parseFattura();
   console.log(result);

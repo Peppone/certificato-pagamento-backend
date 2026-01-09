@@ -22,12 +22,13 @@ export class PDFController {
     };
 
     const browser = await puppeteer.launch(configLaunch);
-
+    console.log(__filename)
     const page = await browser.newPage();
     const waitUntil = "networkidle2";
     const templateDir = dirname(
-      "/home/portaluri/Progetti/certificati-pagamento/backend/src/template/cert.hbs"
+      "./src/template/cert.hbs"
     );
+    const pdfDir = dirname("dist\pdfgen\tmp");
     const file = fs.readFileSync(join(templateDir, "cert.hbs"), "utf8");
     //const templateDir = resolve(__dirname, '..', 'views', 'template-pdf.hbs');
     //const file = fs.readFileSync(templateDir, 'utf-8');
@@ -203,7 +204,7 @@ export class PDFController {
 
     await page.pdf({
       format: "A4",
-      path: `/home/portaluri/Progetti/certificati-pagamento/backend/dist/pdfgen/tmp/${name}`,
+      path: `${pdfDir}/${name}`,
       displayHeaderFooter: false,
       preferCSSPageSize: false,
       printBackground: true,
