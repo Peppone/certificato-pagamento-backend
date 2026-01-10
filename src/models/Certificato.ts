@@ -39,7 +39,8 @@ export interface IDataCertGen {
 export type SintesiCertificato = {
   numero: string;
   data: string;
-  amount: number;
+  amount: string;
+  ritenuta:string;
 };
 
 

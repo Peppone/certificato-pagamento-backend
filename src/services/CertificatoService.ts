@@ -69,15 +69,26 @@ async function generate(certificato: IDataCertGen): Promise<void> {
   //const file = fs.readFileSync(templateDir, 'utf-8');
 
   const formattedSintesiCertificato = certificato.sintesiCertificato?.map(
-    ({ amount: certamount, ...rest }) => ({
+    ({ amount: certamount, ritenuta, ...rest }) => ({
       ...rest,
-      certamount: formatCurrency(certamount),
+      certamount: formatCurrency(Number(certamount)),
+      ritenuta: formatCurrency(Number(ritenuta)),
     })
   );
   let totale = 0;
   let totaleIva = 0;
   let totaleImponibile = 0;
   let totaleRitenuta = 0;
+
+  const parsedCertificatoSal = certificato.sal.map((elem) => ({
+    ...elem,
+    iva: formatCurrency(Number(elem.iva)),
+    ritenuta: formatCurrency(Number(elem.ritenuta)),
+    imponibile: formatCurrency(Number(elem.imponibile)),
+    lordo: formatCurrency(Number(elem.lordo))
+  }))
+
+  const parsedCertificato = { ...certificato, sal: parsedCertificatoSal }
 
   const formattedFatture = certificato.fatture.map(
     ({
@@ -98,7 +109,7 @@ async function generate(certificato: IDataCertGen): Promise<void> {
         Number(ritenuta) && formatCurrency(Number(ritenuta));
 
       const formattedIva =
-        Number(iva) && formatCurrency(Number(iva)*100);
+        Number(iva) && formatCurrency(Number(iva) * 100);
 
       const partTotale = imponibile + Number(iva);
 
@@ -113,7 +124,7 @@ async function generate(certificato: IDataCertGen): Promise<void> {
         style: "percent",
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
-      }).format(Number(percentualeIva)*100);
+      }).format(Number(percentualeIva) * 100);
 
       return {
         ...rest,
@@ -153,7 +164,19 @@ async function generate(certificato: IDataCertGen): Promise<void> {
       currency: "EUR",
     }).format(
       certificato.sintesiCertificato.reduce(
-        (acc, curr) => (acc += curr.amount),
+        (acc, curr) => (acc += Number(curr.amount)),
+        0
+      )
+    );
+
+  const totaleSintesiRitenuta =
+    certificato.sintesiCertificato &&
+    new Intl.NumberFormat("it-IT", {
+      style: "currency",
+      currency: "EUR",
+    }).format(
+      certificato.sintesiCertificato.reduce(
+        (acc, curr) => (acc += Number(curr.ritenuta)),
         0
       )
     );
@@ -176,9 +199,10 @@ async function generate(certificato: IDataCertGen): Promise<void> {
   }));
 
   const data = {
-    ...certificato,
+    ...parsedCertificato,
     certificate: formattedSintesiCertificato,
     totaleSintesiCertificato,
+    totaleSintesiRitenuta,
     fatture: formattedFatture,
     totale: formattedTotale,
     totaleImponibile: formattedTotaleImponibile,

@@ -18,6 +18,11 @@
 			margin-bottom: 10px;
 		}
 
+		ul {
+			list-style-position: inside;
+			margin-left: 0.75em;
+		}
+
 		.header {
 			text-align: center;
 		}
@@ -67,6 +72,10 @@
 			word-break: break-all;
 			overflow: hidden;
 			font-size: xx-small;
+		}
+
+		.center {
+			text-align: center;
 		}
 
 		.center-bold {
@@ -186,6 +195,11 @@
 			font-weight: 200;
 		}
 
+		.row-container {
+			display: flex;
+			flex-direction: row;
+		}
+
 		.invoice-table-container {
 			display: flex;
 			flex-direction: row;
@@ -227,23 +241,29 @@
 			<div class="sidetable">
 				<table>
 					<tr>
-						<td colspan="3" class="center-bold">Certificati precedenti</td>
+						<td colspan="4" class="center-bold">Certificati precedenti</td>
 					</tr>
 					<tr>
 						<th>N.</th>
 						<th>Data</th>
 						<th>Importo</th>
+						<th>Rit.</th>
 					</tr>
 					{{#each certificate}}
 					<tr>
 						<td>{{numero}}</td>
 						<td>{{data}}</td>
 						<td>{{certamount}}</td>
+						<td>{{ritenuta}}</td>
 					</tr>
 					{{/each}}
 					<tr>
+						<td colspan="3" class="center">Totale Ritenuta</td>
+						<td>{{totaleSintesiRitenuta}}</td>
+					</tr>
+					<tr>
 						<td colspan="2" class="center-bold">Totale</td>
-						<td>{{totaleSintesiCertificato}}</td>
+						<td colspan="2">{{totaleSintesiCertificato}}</td>
 					</tr>
 				</table>
 			</div>
@@ -258,19 +278,20 @@
 				{{/if}}
 				<ul>
 					{{#each sal}}
-					<li>
-						<p>{{this.numero}} SAL relativo al periodo {{this.periodo}}, imponibile: {{this.imponibile}},
-							ritenuta applicata: {{this.ritenuta}}, di cui IVA: {{this.iva}}
-							{{#if this.quotaSospesa}}
-							comprensivo della quota sospesa: {{this.quotaSospesa}}
-							{{/if}}
-							per un totale di
-							{{this.lordo}}.
-							{{#if this.altro}}
-							{{this.altro}}
-							{{/if}}
-						</p>
-					</li>
+						<li>
+							{{this.numero}} SAL relativo al periodo {{this.periodo}}, imponibile:
+								{{this.imponibile}},
+								ritenuta applicata: {{this.ritenuta}}, di cui IVA: {{this.iva}}
+								{{#if this.quotaSospesa}}
+								comprensivo della quota sospesa: {{this.quotaSospesa}}
+								{{/if}}
+								per un totale di
+								{{this.lordo}}.
+								{{#if this.altro}}
+								{{this.altro}}
+								{{/if}}
+							
+						</li>
 					{{/each}}
 				</ul>
 				<p>

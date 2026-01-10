@@ -138,10 +138,24 @@ export class PDFController {
         currency: "EUR",
       }).format(
         certificato.sintesiCertificato.reduce(
-          (acc, curr) => (acc += curr.certamount),
+          (acc, curr) => (acc += Number(curr.certamount)),
           0
         )
       );
+
+    const totaleSintesiRitenuta =
+      certificato.sintesiCertificato &&
+      new Intl.NumberFormat("it-IT", {
+        style: "currency",
+        currency: "EUR",
+      }).format(
+        certificato.sintesiCertificato.reduce(
+          (acc, curr) => (acc += Number(curr.ritenuta)),
+          0
+        )
+      );
+      console.log("HELLO")
+      console.log(totaleSintesiRitenuta);
 
     const formattedTotale = new Intl.NumberFormat("it-IT", {
       style: "currency",
@@ -179,6 +193,7 @@ export class PDFController {
       ...certificato,
       certificate: formattedSintesiCertificato,
       totaleSintesiCertificato,
+      totaleSintesiRitenuta,
       fatture: formattedFatture,
       totale: formattedTotale,
       totaleImponibile: formattedTotaleImponibile,

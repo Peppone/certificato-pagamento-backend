@@ -1,7 +1,8 @@
 export type SintesiCertificato = {
   certnumber: string | number;
   certdate: string | Date;
-  certamount: number;
+  certamount: string;
+  ritenuta: string;
 };
 
 export type Certificato = {
