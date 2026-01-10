@@ -37,9 +37,9 @@ export interface IDataCertGen {
 }
 
 export type SintesiCertificato = {
-  certnumber: string | number;
-  certdate: string | Date;
-  certamount: number;
+  numero: string;
+  data: string;
+  amount: number;
 };
 
 
@@ -64,7 +64,7 @@ type FatturaCertificato = {
   numero: string;
   data: string | Date;
   ammontare: string;
-  detrazione?: number;
+  ritenuta?: number;
   iva: string;
   percentualeIva: string;
   periodo: string | Date;

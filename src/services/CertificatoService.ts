@@ -7,6 +7,7 @@ import puppeteer from 'puppeteer';
 import fs from "fs";
 import { dirname, join } from "path";
 import conv_iac from '@src/pdfgen/num-util';
+import { formatCurrency } from './utils/format';
 
 /******************************************************************************
                                 Constants
@@ -68,71 +69,51 @@ async function generate(certificato: IDataCertGen): Promise<void> {
   //const file = fs.readFileSync(templateDir, 'utf-8');
 
   const formattedSintesiCertificato = certificato.sintesiCertificato?.map(
-    ({ certamount, ...rest }) => ({
+    ({ amount: certamount, ...rest }) => ({
       ...rest,
-      certamount: new Intl.NumberFormat("it-IT", {
-        style: "currency",
-        currency: "EUR",
-      }).format(certamount),
+      certamount: formatCurrency(certamount),
     })
   );
   let totale = 0;
   let totaleIva = 0;
   let totaleImponibile = 0;
-  let totaleDetrazione = 0;
+  let totaleRitenuta = 0;
 
   const formattedFatture = certificato.fatture.map(
     ({
       ammontare,
-      detrazione,
+      ritenuta,
       iva,
       percentualeIva,
       ragioneSociale,
       ...rest
     }) => {
-      const imponibile = Number(ammontare) + (detrazione ? Number(detrazione) : 0);
+      const imponibile = Number(ammontare) + (ritenuta ? Number(ritenuta) : 0);
 
-      const formattedAmmontare = new Intl.NumberFormat("it-IT", {
-        style: "currency",
-        currency: "EUR",
-      }).format(Number(ammontare));
+      const formattedAmmontare = formatCurrency(Number(ammontare));
 
-      const formattedImponibile = new Intl.NumberFormat("it-IT", {
-        style: "currency",
-        currency: "EUR",
-      }).format(imponibile);
+      const formattedImponibile = formatCurrency(imponibile);
 
       const formattedDetrazione =
-        Number(detrazione) &&
-        new Intl.NumberFormat("it-IT", {
-          style: "currency",
-          currency: "EUR",
-        }).format(Number(detrazione));
+        Number(ritenuta) && formatCurrency(Number(ritenuta));
 
       const formattedIva =
-        Number(iva) &&
-        new Intl.NumberFormat("it-IT", {
-          style: "currency",
-          currency: "EUR",
-        }).format(Number(iva));
+        Number(iva) && formatCurrency(Number(iva)*100);
 
       const partTotale = imponibile + Number(iva);
 
       totale += partTotale;
       totaleIva += Number(iva) || 0;
       totaleImponibile += imponibile;
-      totaleDetrazione += detrazione || 0;
+      totaleRitenuta += Number(ritenuta) || 0;
 
-      const formattedPartTotale = new Intl.NumberFormat("it-IT", {
-        style: "currency",
-        currency: "EUR",
-      }).format(partTotale);
+      const formattedPartTotale = formatCurrency(partTotale);
 
       const formattedPercentualeIva = new Intl.NumberFormat("it-IT", {
         style: "percent",
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
-      }).format(Number(percentualeIva));
+      }).format(Number(percentualeIva)*100);
 
       return {
         ...rest,
@@ -148,7 +129,7 @@ async function generate(certificato: IDataCertGen): Promise<void> {
   );
 
   const totalePerDitta = certificato.fatture.reduce(
-    (prev, { ragioneSociale, ammontare, detrazione, iva }) => {
+    (prev, { ragioneSociale, ammontare, ritenuta: detrazione, iva }) => {
       let partTotalePerDitta = 0;
 
       if (prev.has(ragioneSociale)) {
@@ -172,30 +153,18 @@ async function generate(certificato: IDataCertGen): Promise<void> {
       currency: "EUR",
     }).format(
       certificato.sintesiCertificato.reduce(
-        (acc, curr) => (acc += curr.certamount),
+        (acc, curr) => (acc += curr.amount),
         0
       )
     );
 
-  const formattedTotale = new Intl.NumberFormat("it-IT", {
-    style: "currency",
-    currency: "EUR",
-  }).format(totale);
+  const formattedTotale = formatCurrency(totale);
 
-  const formattedTotaleIva = new Intl.NumberFormat("it-IT", {
-    style: "currency",
-    currency: "EUR",
-  }).format(totaleIva);
+  const formattedTotaleIva = formatCurrency(totaleIva);
 
-  const formattedTotaleImponibile = new Intl.NumberFormat("it-IT", {
-    style: "currency",
-    currency: "EUR",
-  }).format(totaleImponibile);
+  const formattedTotaleImponibile = formatCurrency(totaleImponibile);
 
-  const formattedTotaleDetrazione = new Intl.NumberFormat("it-IT", {
-    style: "currency",
-    currency: "EUR",
-  }).format(totaleDetrazione);
+  const formattedTotaleDetrazione = formatCurrency(totaleRitenuta);
 
   const sortedTotalePerDitta = Array.from(totalePerDitta.entries()).sort(
     ([ragA, totA], [ragB, totB]) => ragA.localeCompare(ragB)
@@ -203,10 +172,7 @@ async function generate(certificato: IDataCertGen): Promise<void> {
 
   const formattedTotalePerDitta = sortedTotalePerDitta.map(([rag, tot]) => ({
     ragioneSociale: rag,
-    totale: new Intl.NumberFormat("it-IT", {
-      style: "currency",
-      currency: "EUR",
-    }).format(tot),
+    totale: formatCurrency(tot),
   }));
 
   const data = {

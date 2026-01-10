@@ -1,14 +1,19 @@
-import { Router } from 'express';
+import { Router, static as static_ } from 'express';
 
 import PATHS from '@src/common/constants/PATHS';
 import UserRoutes from './UserRoutes';
 import CertificatoRoutes from './CertificatoRoutes';
+import path from 'path';
 
 /******************************************************************************
                                 Setup
 ******************************************************************************/
 
 const apiRouter = Router();
+
+//image routes//
+
+
 
 const certificatoRouter = Router();
 certificatoRouter.post('', CertificatoRoutes.add)
